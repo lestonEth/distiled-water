@@ -40,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <CardHeader className="p-0">
           <div className="relative">
             <img
-              src={product.image || "/placeholder.svg"}
+              src={product.image}
               alt={product.name}
               className="w-full h-48 object-cover rounded-t-lg"
             />

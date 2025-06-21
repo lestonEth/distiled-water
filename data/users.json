@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "1750516505955-3byjt2h6y",
+    "name": "jimleston osoi",
+    "email": "Jimleston32@gmail.com",
+    "password": "Vinjim1234",
+    "phone": "0113159363",
+    "address": "45 Kenyatta Avenue",
+    "userType": "user",
+    "createdAt": "2025-06-21T14:35:05.955Z"
+  },
+  {
+    "id": "1750516711648-zde3c3ox6",
+    "name": "admin",
+    "email": "admin@gmail.com",
+    "password": "admin123",
+    "phone": "0113159363",
+    "address": "Thika, Town",
+    "userType": "admin",
+    "createdAt": "2025-06-21T14:38:31.648Z"
+  },
+  {
+    "id": "1750516776788-nssf05uoj",
+    "name": "Samson Mwangi",
+    "email": "transport@gmail.com",
+    "password": "transport",
+    "phone": "0113159363",
+    "address": "45 Kenyatta Avenue",
+    "userType": "transporter",
+    "vehicleId": "123456",
+    "vehicleName": "M3",
+    "vehicleSize": "medium",
+    "createdAt": "2025-06-21T14:39:36.788Z"
+  }
+]

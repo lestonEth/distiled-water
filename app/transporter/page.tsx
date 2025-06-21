@@ -7,15 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Truck, Package, Clock, LogOut, Play, CheckCircle } from "lucide-react"
+import { ordersApi, usersApi } from "@/lib/api"
 
 export default function TransporterPage() {
   const router = useRouter()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [assignedOrders, setAssignedOrders] = useState<any[]>([])
   const [users, setUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const user = localStorage.getItem("currentUser")
+    console.log(user)
     if (!user) {
       router.push("/auth/login")
       return
@@ -28,42 +31,58 @@ export default function TransporterPage() {
     }
 
     setCurrentUser(userData)
-    loadData()
   }, [router])
 
-  const loadData = () => {
-    const allOrders = JSON.parse(localStorage.getItem("orders") || "[]")
-    const allUsers = JSON.parse(localStorage.getItem("users") || "[]")
+  useEffect(() => {
+    if (currentUser) {
+      loadData()
+    }
+  }, [currentUser])
 
-    setUsers(allUsers)
+  const loadData = async () => {
+    try {
+      setLoading(true)
 
-    // Get orders assigned to this transporter
-    const transporterOrders = allOrders.filter(
-      (order: any) => order.transporterId === JSON.parse(localStorage.getItem("currentUser") || "{}").id,
-    )
+      // Fetch all data from API
+      const [allOrders, allUsers] = await Promise.all([
+        ordersApi.getAll(),
+        usersApi.getAll()
+      ])
 
-    setAssignedOrders(transporterOrders)
+      setUsers(allUsers)
+
+      console.log(allOrders)
+      console.log(currentUser)
+      // Get orders assigned to this transporter
+      const transporterOrders = allOrders.filter(
+        (order: any) => order.transporterId === currentUser.id
+      )
+
+      setAssignedOrders(transporterOrders)
+    } catch (error) {
+      console.error("Failed to load data:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const updateOrderStatus = (orderId: string, status: string) => {
-    const allOrders = JSON.parse(localStorage.getItem("orders") || "[]")
-    const updatedOrders = allOrders.map((order: any) => {
-      if (order.id === orderId) {
-        const updates: any = { status, updatedAt: new Date().toISOString() }
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    try {
+      const updates: any = { status, updatedAt: new Date().toISOString() }
 
-        if (status === "in_transit") {
-          updates.startTime = new Date().toISOString()
-        } else if (status === "delivered") {
-          updates.deliveredTime = new Date().toISOString()
-        }
-
-        return { ...order, ...updates }
+      if (status === "in_transit") {
+        updates.startTime = new Date().toISOString()
+      } else if (status === "delivered") {
+        updates.deliveredTime = new Date().toISOString()
       }
-      return order
-    })
 
-    localStorage.setItem("orders", JSON.stringify(updatedOrders))
-    setAssignedOrders(updatedOrders.filter((order: any) => order.transporterId === currentUser.id))
+      await ordersApi.update(orderId, updates)
+
+      // Reload data to get updated orders
+      await loadData()
+    } catch (error) {
+      console.error("Failed to update order status:", error)
+    }
   }
 
   const handleLogout = () => {
@@ -86,6 +105,17 @@ export default function TransporterPage() {
 
   if (!currentUser) {
     return <div>Loading...</div>
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading transporter data...</p>
+        </div>
+      </div>
+    )
   }
 
   const pendingOrders = assignedOrders.filter((order) => order.status === "approved")

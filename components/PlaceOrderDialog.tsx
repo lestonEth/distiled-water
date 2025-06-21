@@ -90,7 +90,7 @@ export function PlaceOrderDialog({ open, onOpenChange, currentUser, onOrderPlace
               <SelectContent>
                 {[1, 2, 3, 4, 5, 10, 15, 20, 25, 30].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
-                    {num} container{num > 1 ? "s" : ""} (${num * 25})
+                    {num} container{num > 1 ? "s" : ""} (Ksh {num * 25})
                   </SelectItem>
                 ))}
               </SelectContent>
