@@ -26,7 +26,7 @@ export default function HomePage() {
       id: 1,
       name: "Premium Distilled Water - 20L",
       price: 25,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://tiimg.tistatic.com/fp/1/006/211/20l-mineral-water-can-132.jpg",
       description: "Ultra-pure distilled water in 20L containers. Perfect for drinking, cooking, and medical use.",
       features: ["99.9% Pure", "Laboratory Tested", "BPA-Free Container", "Long Shelf Life"],
       inStock: true,
@@ -35,7 +35,7 @@ export default function HomePage() {
       id: 2,
       name: "Family Pack - 5L x 4 Bottles",
       price: 45,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://www.gobeba.com/wp-content/uploads/2021/11/MK-H2O-1.png",
       description: "Convenient family pack with 4 bottles of 5L distilled water. Ideal for households.",
       features: ["Convenient Size", "Family Friendly", "Easy Storage", "Cost Effective"],
       inStock: true,
@@ -44,7 +44,7 @@ export default function HomePage() {
       id: 3,
       name: "Industrial Grade - 50L",
       price: 85,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://m.media-amazon.com/images/I/61bLkMDLtBL._UF894,1000_QL80_.jpg",
       description: "High-capacity industrial grade distilled water for commercial and industrial applications.",
       features: ["Industrial Grade", "High Volume", "Commercial Use", "Bulk Pricing"],
       inStock: true,
@@ -53,7 +53,7 @@ export default function HomePage() {
       id: 4,
       name: "Medical Grade - 10L",
       price: 35,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://zoros.co.ke/wp-content/uploads/2015/04/zoros-cool-purified-drinking-water-10l.jpg",
       description: "Medical grade distilled water meeting pharmaceutical standards for medical facilities.",
       features: ["Medical Grade", "Pharmaceutical Standard", "Sterile Packaging", "Quality Certified"],
       inStock: false,
@@ -139,7 +139,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/images/water-banner.jpg')",
+            backgroundImage: "url('https://media.istockphoto.com/id/477571259/photo/crystal-clear-water-whit-two-ripples.jpg?s=612x612&w=0&k=20&c=llvZVT4jlKWjAs9jNyT8dfgP5DaA_6duqJE1qQ3NVQc=')",
           }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
@@ -362,9 +362,9 @@ export default function HomePage() {
 
             <div className="relative">
               <img
-                src="/placeholder.svg?height=500&width=600"
+                src="https://extension.psu.edu/media/catalog/product/8/2/8249e13e630b992cc6fa8ec8740fab7f.jpeg?quality=80&bg-color=248,248,248&fit=bounds&height=427&width=640&canvas=640:427"
                 alt="Delivery process illustration"
-                className="rounded-2xl shadow-2xl"
+                className="rounded-2xl shadow-2xl h-full w-full object-cover"
               />
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center">
                 <CheckCircle className="h-12 w-12 text-white" />
