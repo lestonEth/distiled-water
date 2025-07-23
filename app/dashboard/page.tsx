@@ -9,12 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Droplets, Package, Truck, Star, Plus, LogOut, User } from "lucide-react"
 import { PlaceOrderDialog } from "@/components/PlaceOrderDialog"
 import { FeedbackDialog } from "@/components/FeedbackDialog"
-import { ordersApi } from "@/lib/api"
+import { ordersApi, feedbackApi } from "@/lib/api"
 
 export default function DashboardPage() {
   const router = useRouter()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [orders, setOrders] = useState<any[]>([])
+  const [feedback, setFeedback] = useState<any[]>([])
   const [showOrderDialog, setShowOrderDialog] = useState(false)
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
@@ -29,6 +30,7 @@ export default function DashboardPage() {
     const userData = JSON.parse(user)
     setCurrentUser(userData)
     loadOrders(userData.id)
+    loadFeedback(userData.id)
   }, [router])
 
   const loadOrders = async (userId: string) => {
@@ -37,6 +39,16 @@ export default function DashboardPage() {
       setOrders(userOrders)
     } catch (error) {
       console.error("Failed to load orders:", error)
+    }
+  }
+
+  const loadFeedback = async (userId: string) => {
+    try {
+      const allFeedback = await feedbackApi.getAll()
+      // Only feedback by this user
+      setFeedback(allFeedback.filter((f: any) => f.userId === userId))
+    } catch (error) {
+      console.error("Failed to load feedback:", error)
     }
   }
 
@@ -196,18 +208,22 @@ export default function DashboardPage() {
                             </p>
                           )}
                           {order.status === "delivered" && (
-                            <Button
-                              onClick={() => {
-                                setSelectedOrder(order)
-                                setShowFeedbackDialog(true)
-                              }}
-                              variant="outline"
-                              size="sm"
-                              className="mt-2"
-                            >
-                              <Star className="h-4 w-4 mr-2" />
-                              Leave Feedback
-                            </Button>
+                            feedback.some(f => f.orderId === order.id) ? (
+                              <span className="inline-block px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded mt-2">Feedback submitted</span>
+                            ) : (
+                              <Button
+                                onClick={() => {
+                                  setSelectedOrder(order)
+                                  setShowFeedbackDialog(true)
+                                }}
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                              >
+                                <Star className="h-4 w-4 mr-2" />
+                                Leave Feedback
+                              </Button>
+                            )
                           )}
                         </div>
                       </div>
@@ -266,7 +282,12 @@ export default function DashboardPage() {
 
       <FeedbackDialog
         open={showFeedbackDialog}
-        onOpenChange={setShowFeedbackDialog}
+        onOpenChange={(open) => {
+          setShowFeedbackDialog(open)
+          if (!open && currentUser) {
+            loadFeedback(currentUser.id)
+          }
+        }}
         order={selectedOrder}
         currentUser={currentUser}
       />

@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Star } from "lucide-react"
 import { generateId } from "@/lib/utils"
+import { feedbackApi } from "@/lib/api"
 
 interface FeedbackDialogProps {
   open: boolean
@@ -34,20 +35,15 @@ export function FeedbackDialog({ open, onOpenChange, order, currentUser }: Feedb
     setLoading(true)
 
     try {
-      const feedback = JSON.parse(localStorage.getItem("feedback") || "[]")
-
       const newFeedback = {
-        id: generateId(),
         userId: currentUser.id,
         orderId: order.id,
         transporterId: order.transporterId,
         rating,
         comment,
-        createdAt: new Date().toISOString(),
       }
 
-      feedback.push(newFeedback)
-      localStorage.setItem("feedback", JSON.stringify(feedback))
+      await feedbackApi.create(newFeedback)
 
       onOpenChange(false)
       setRating(0)

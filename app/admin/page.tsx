@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shield, Users, Package, Truck, Star, LogOut, XCircle, Printer, PieChart } from "lucide-react"
 import { ordersApi, usersApi } from "@/lib/api"
 import { BarChart, DonutChart } from "@tremor/react"
-import { useReactToPrint } from "react-to-print"
 import { useRef } from "react"
 
 export default function AdminPage() {
@@ -112,67 +111,6 @@ export default function AdminPage() {
         return "bg-gray-100 text-gray-800"
     }
   }
-
-  // Print handlers for each table
-  const handlePrintOrders = useReactToPrint({
-    content: () => ordersTableRef.current,
-    pageStyle: `
-      @page { size: auto; margin: 5mm; }
-      @media print {
-        body { -webkit-print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .print-table { width: 100%; border-collapse: collapse; }
-        .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; }
-        .print-table th { background-color: #f2f2f2; }
-      }
-    `,
-    documentTitle: "Orders Report"
-  })
-
-  const handlePrintUsers = useReactToPrint({
-    content: () => usersTableRef.current,
-    pageStyle: `
-      @page { size: auto; margin: 5mm; }
-      @media print {
-        body { -webkit-print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .print-table { width: 100%; border-collapse: collapse; }
-        .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; }
-        .print-table th { background-color: #f2f2f2; }
-      }
-    `,
-    documentTitle: "Users Report"
-  })
-
-  const handlePrintContainers = useReactToPrint({
-    content: () => containersTableRef.current,
-    pageStyle: `
-      @page { size: auto; margin: 5mm; }
-      @media print {
-        body { -webkit-print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .print-table { width: 100%; border-collapse: collapse; }
-        .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; }
-        .print-table th { background-color: #f2f2f2; }
-      }
-    `,
-    documentTitle: "Containers Report"
-  })
-
-  const handlePrintFeedback = useReactToPrint({
-    content: () => feedbackTableRef.current,
-    pageStyle: `
-      @page { size: auto; margin: 5mm; }
-      @media print {
-        body { -webkit-print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .print-table { width: 100%; border-collapse: collapse; }
-        .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; }
-        .print-table th { background-color: #f2f2f2; }
-      }
-    `,
-    documentTitle: "Feedback Report"
-  })
 
   // Prepare data for charts
   const orderStatusData = orders.reduce((acc, order) => {
@@ -307,11 +245,11 @@ export default function AdminPage() {
                     <CardTitle>Order Management</CardTitle>
                     <CardDescription>Approve or reject orders and assign transporters</CardDescription>
                   </div>
-                  <Button onClick={handlePrintOrders} variant="outline" size="sm" className="no-print">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Print Report
-                  </Button>
                 </div>
+                <Button onClick={() => window.print()} variant="outline" size="sm" className="no-print mt-4">
+                  <Printer className="h-4 w-4 mr-2" />
+                  Print Report
+                </Button>
               </CardHeader>
               <CardContent>
                 <div ref={ordersTableRef}>
@@ -397,11 +335,11 @@ export default function AdminPage() {
                     <CardTitle>User Management</CardTitle>
                     <CardDescription>View and manage all system users</CardDescription>
                   </div>
-                  <Button onClick={handlePrintUsers} variant="outline" size="sm" className="no-print">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Print Report
-                  </Button>
                 </div>
+                <Button onClick={() => window.print()} variant="outline" size="sm" className="no-print mt-4">
+                  <Printer className="h-4 w-4 mr-2" />
+                  Print Report
+                </Button>
               </CardHeader>
               <CardContent>
                 <div ref={usersTableRef}>
@@ -446,11 +384,11 @@ export default function AdminPage() {
                     <CardTitle>Container Management</CardTitle>
                     <CardDescription>View all water containers and their status</CardDescription>
                   </div>
-                  <Button onClick={handlePrintContainers} variant="outline" size="sm" className="no-print">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Print Report
-                  </Button>
                 </div>
+                <Button onClick={() => window.print()} variant="outline" size="sm" className="no-print mt-4">
+                  <Printer className="h-4 w-4 mr-2" />
+                  Print Report
+                </Button>
               </CardHeader>
               <CardContent>
                 <div ref={containersTableRef}>
@@ -512,11 +450,11 @@ export default function AdminPage() {
                     <CardTitle>Customer Feedback</CardTitle>
                     <CardDescription>View all customer feedback and ratings</CardDescription>
                   </div>
-                  <Button onClick={handlePrintFeedback} variant="outline" size="sm" className="no-print">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Print Report
-                  </Button>
                 </div>
+                <Button onClick={() => window.print()} variant="outline" size="sm" className="no-print mt-4">
+                  <Printer className="h-4 w-4 mr-2" />
+                  Print Report
+                </Button>
               </CardHeader>
               <CardContent>
                 <div ref={feedbackTableRef}>
