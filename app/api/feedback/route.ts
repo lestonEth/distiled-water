@@ -1,31 +1,37 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { readJsonFile, writeJsonFile, generateId } from "@/lib/fileUtils"
+import { type NextRequest, NextResponse } from "next/server";
+import { FeedbackService } from "@/lib/database-service";
+import { generateId } from "@/lib/fileUtils";
 
 export async function GET() {
   try {
-    const feedback = await readJsonFile("feedback.json")
-    return NextResponse.json(feedback)
+    const feedback = await FeedbackService.getAllFeedback();
+    return NextResponse.json(feedback);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch feedback" }, { status: 500 })
+    console.error("Error fetching feedback:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch feedback" },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const feedbackData = await request.json()
-    const feedback = await readJsonFile("feedback.json")
+    const feedbackData = await request.json();
 
     const newFeedback = {
       id: generateId(),
       ...feedbackData,
-      createdAt: new Date().toISOString(),
-    }
+    };
 
-    feedback.push(newFeedback)
-    await writeJsonFile("feedback.json", feedback)
+    const createdFeedback = await FeedbackService.createFeedback(newFeedback);
 
-    return NextResponse.json(newFeedback, { status: 201 })
+    return NextResponse.json(createdFeedback, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create feedback" }, { status: 500 })
+    console.error("Error creating feedback:", error);
+    return NextResponse.json(
+      { error: "Failed to create feedback" },
+      { status: 500 }
+    );
   }
 }

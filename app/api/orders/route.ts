@@ -1,68 +1,77 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { readJsonFile, writeJsonFile, generateId } from "@/lib/fileUtils"
+import { type NextRequest, NextResponse } from "next/server";
+import { OrderService } from "@/lib/database-service";
+import { generateId } from "@/lib/fileUtils";
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get("userId")
-    const transporterId = searchParams.get("transporterId")
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("userId");
+    const transporterId = searchParams.get("transporterId");
 
-    const orders = await readJsonFile("orders.json")
+    let orders;
 
-    let filteredOrders = orders
     if (userId) {
-      filteredOrders = orders.filter((order: any) => order.userId === userId)
+      orders = await OrderService.getOrdersByUserId(userId);
     } else if (transporterId) {
-      filteredOrders = orders.filter((order: any) => order.transporterId === transporterId)
+      orders = await OrderService.getOrdersByTransporterId(transporterId);
+    } else {
+      orders = await OrderService.getAllOrders();
     }
 
-    return NextResponse.json(filteredOrders)
+    return NextResponse.json(orders);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 })
+    console.error("Error fetching orders:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch orders" },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const orderData = await request.json()
-    const orders = await readJsonFile("orders.json")
+    const orderData = await request.json();
 
     const newOrder = {
       id: generateId(),
       ...orderData,
-      status: "pending",
-      transporterId: null,
-      createdAt: new Date().toISOString(),
-    }
+    };
 
-    orders.push(newOrder)
-    await writeJsonFile("orders.json", orders)
+    const createdOrder = await OrderService.createOrder(newOrder);
 
-    return NextResponse.json(newOrder, { status: 201 })
+    return NextResponse.json(createdOrder, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
+    console.error("Error creating order:", error);
+    return NextResponse.json(
+      { error: "Failed to create order" },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, ...updateData } = await request.json()
-    const orders = await readJsonFile("orders.json")
+    const { id, ...updateData } = await request.json();
 
-    const orderIndex = orders.findIndex((order: any) => order.id === id)
-    if (orderIndex === -1) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 })
+    if (!id) {
+      return NextResponse.json(
+        { error: "Order ID is required" },
+        { status: 400 }
+      );
     }
 
-    orders[orderIndex] = {
-      ...orders[orderIndex],
-      ...updateData,
-      updatedAt: new Date().toISOString(),
+    const updatedOrder = await OrderService.updateOrder(id, updateData);
+
+    if (!updatedOrder) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    await writeJsonFile("orders.json", orders)
-    return NextResponse.json(orders[orderIndex])
+    return NextResponse.json(updatedOrder);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update order" }, { status: 500 })
+    console.error("Error updating order:", error);
+    return NextResponse.json(
+      { error: "Failed to update order" },
+      { status: 500 }
+    );
   }
 }

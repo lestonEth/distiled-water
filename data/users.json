@@ -1,15 +1,5 @@
 [
   {
-    "id": "1750516505955-3byjt2h6y",
-    "name": "jimleston osoi",
-    "email": "Jimleston32@gmail.com",
-    "password": "Vinjim1234",
-    "phone": "0113159363",
-    "address": "45 Kenyatta Avenue",
-    "userType": "user",
-    "createdAt": "2025-06-21T14:35:05.955Z"
-  },
-  {
     "id": "1750516711648-zde3c3ox6",
     "name": "admin",
     "email": "admin@gmail.com",
